@@ -2,3 +2,7 @@
 debian/*.log
 debian/*.substvars
 debian/files
+lib/binapi.o
+mount.pfs
+*.o
+*.swp
