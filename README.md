@@ -19,8 +19,6 @@ pfs
 ===
 
 pCloud filesystem client
-NOTE: this filesystem is obsolete. The new version can be found in the
-pclsync repo at https://github.com/pcloudcom/pclsync .
 
 To compile, you need fuse and the openssl headers. In debian,
 they're in libssl-dev and libfuse-dev, in fedora in fuse-devel and
