@@ -8,9 +8,7 @@ Type=forking
 User=<your user>
 Group=<your user>
 RemainAfterExit=yes
-ExecStart=/usr/bin/mount.pfs --username <your email here> --password '<your password here>' --ssl /home/<your user>/pCloudDrive
-#ExecStart=/usr/bin/mount.pfs --auth <your auth key here>  --ssl /home/<your user>/pCloudDrive
-ExecStop=/usr/bin/umount /home/<your user>/pCloudDrive
+ExecStart=/usr/bin/mount.pfs --auth <your auth key here>  --ssl /home/<your user>/pCloudDrive
 
 [Install]
 WantedBy=multi-user.target

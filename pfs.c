@@ -3470,7 +3470,13 @@ int pfs_main(int argc, char **argv, const pfs_params* params){
   }
 
   if (params->username && params->pass){
+    fprintf(stderr, "Getting Auth Token\n");
     get_auth(params->username, params->pass);
+    fprintf(stderr, "Got Auth Token: %s\n", auth);
+    fprintf(stderr, "Use this to mount pCloud: \n/usr/bin/mount.pfs --auth %s --ssl /home/<your user>/pCloudDrive\n", auth);
+    api_close(sock);
+    api_close(diffsock);
+    exit(0);
   }else if(params->auth){
     auth = (char*)params->auth;
   }
