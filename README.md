@@ -1,7 +1,7 @@
 Fork Notice
 ===
 
-I created this fork to connect my pCloud drive to my raspberry pi 3 to stream videos.
+I created this fork to connect my pCloud drive to my raspberry pi 3 to stream videos. The instructions in this file are tested for an rpi3 with OSMC installed and I'm currently using this setup.
 
 Why not console-client/pcloudcc?
 ---
