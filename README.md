@@ -1,3 +1,20 @@
+Fork Notice
+===
+
+I created this fork to connect my pCloud drive to my raspberry pi 3 to stream videos.
+
+Why not console-client/pcloudcc?
+---
+I tried that and pcloudcc just uses much more CPU and RAM than this and also had more problems with buffering, even after I tried to fix the caching issues because it uses too much RAM.
+
+Things I changed:
+---
+* The in-RAM caching defaults are way too high for an rpi3, so I lowered those.
+* You cannot mount with --username and --password any more, instead if you try it, mount.pfs will generate an authentication token for you to use instead. I did this because I could not get the curl method to work, so I just used the implementation in pfs.c which seemed to work fine...
+* I added the pfs.service file that you can edit after getting your auth key and copy to `/{usr/lib|etc}/systemd/system/pfs.service` - 
+With the service file systemctl start|stop|enable|disable pfs should work as expected.
+
+
 pfs
 ===
 
@@ -13,6 +30,16 @@ openssl-devel.
 
 ### Install pfs
 
+#### Debian based
+```sh
+(sudo) apt-get install libfuse-dev libssl-dev fuse-dbg
+git clone https://github.com/pcloudfs/pfs.git
+cd pfs
+make
+(sudo) make install
+```
+
+#### yum
 ```sh
 (sudo) yum install fuse-devel openssl-devel
 git clone https://github.com/pcloudfs/pfs.git
@@ -24,7 +51,22 @@ make
 ### Get auth token
 
 ```sh 
-curl https://api.pcloud.com/userinfo?getauth=1&username=<email>&password=<password>
+./mount.pfs --username <your pcloud email> --password '<your pcloud password'
+```
+
+You will see output similar to the following:
+````sh
+Getting Auth Token
+Got Auth Token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Use this to mount pCloud: 
+/usr/bin/mount.pfs --auth XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX --ssl /home/<your user>/pCloudDrive
+````
+
+### Mount pDrive
+
+```sh
+mkdir /mnt/pdrive
+mount.pfs --auth <you auth token here> --ssl /mnt/pdrive
 ```
 
 And keep the auth bit.
@@ -33,76 +75,23 @@ and password in the service file.
 
 ### Autostart
 
-Create a systemd service
+Edit pfs.service file and fill in these lines
+
+```
+User=<user the mounted drive will belong to>
+Group=<group the mounted drive will belong to>
+ExecStart=/usr/bin/mount.pfs --auth <you auth token here> <path where you want to mount your drive>
+```
+
+Copy the file to a diroctery where systemd will find it
+```sh
+(sudo) cp pfs.service /etc/systemd/system/pfs.service
+or
+(sudo) cp pfs.service /usr/lib/systemd/system/pfs.service
+```
+
+Make the service start automatically:
 
 ```sh
-gedit /usr/lib/systemd/system/pfs.service
-```
-
-And paste in:
-
-```
-[Unit]
-Description=pCloud mount
-
-[Service]
-Type=oneshot
-User=<your user>
-Group=<your user>
-RemainAfterExit=yes
-ExecStart=/usr/bin/mount.pfs --auth <you auth token here> /run/media/<your user>/pCloud
-ExecStop=/usr/bin/umount /run/media/<your user>/pCloud
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Activate it via:
-
-```sh
-(sudo) systemctl enable pfs.service
-```
-
-
-## Compilation and manual mount on debian/ubuntu
-
-
-### Install dependencies and compile pfs
-```sh
-(sudo) apt-get install fuse-dbg libssl-dbg
-git clone https://github.com/pcloudfs/pfs.git
-cd pfs
-make
-(sudo) make install
-```
-
-### Get auth token
-
-```sh 
-curl https://api.pcloud.com/userinfo?getauth=1&username=<email>&password=<password>
-```
-
-You will see output similar to the following:
-````json
-{
-	"auth": "PhOAAAZ2YPXZEf999Rj8Ewz7abHR28hgNmxN9YGX",
-	"emailverified": true,
-	"quota": 11811160064,
-	"result": 0,
-	"premium": false,
-	"usedquota": 1590902549,
-	"language": "en",
-	"userid": 12345,
-	"email": "my@email.com",
-	"registered": "Thu, 01 Nov 2014 10:10:10 +0000"
-}
-````
-
-Take note of the `auth` token which you need to mount the drive.
-
-### Mount pDrive
-
-```sh
-mkdir /mnt/pdrive
-mount.pfs --auth <you auth token here> /mnt/pdrive
+(sudo) systemctl enable --now pfs.service
 ```
