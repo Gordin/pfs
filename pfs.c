@@ -59,10 +59,10 @@ char mount_point;
 
 pfs_settings fs_settings={
   .pagesize=64*1024,
-  .cachesize=128*1024*1024,
+  .cachesize=256*1024*1024,
   .readaheadmin=64*1024,
-  .readaheadmax=8*1024*1024,
-  .readaheadmaxsec=12,
+  .readaheadmax=16*1024*1024,
+  .readaheadmaxsec=20,
   .maxunackedbytes=256*1024,
   .usessl=1,
   .timeout=30,
