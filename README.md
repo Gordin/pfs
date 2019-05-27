@@ -31,7 +31,7 @@ openssl-devel.
 #### Debian based
 ```sh
 (sudo) apt-get install libfuse-dev libssl-dev fuse-dbg
-git clone https://github.com/pcloudfs/pfs.git
+git clone https://github.com/Gordin/pfs.git
 cd pfs
 make
 (sudo) make install
@@ -40,7 +40,7 @@ make
 #### yum
 ```sh
 (sudo) yum install fuse-devel openssl-devel
-git clone https://github.com/pcloudfs/pfs.git
+git clone https://github.com/Gordin/pfs.git
 cd pfs
 make
 (sudo) make install
